@@ -8,9 +8,10 @@ const sessionSchema = new mongoose.Schema({
         index: true,
     },
     refreshToken:{
+        type: String,
         unique: true
     },
-    expireAt:{
+    expiresAt:{
         type: Date,
         required: true
     } 
@@ -19,4 +20,6 @@ const sessionSchema = new mongoose.Schema({
 })
 
 // tu dong xoa khi het han 
-sessionSchema.index({expiresAt:1}, {})
+sessionSchema.index({expiresAt:1}, {expireAfterSeconds:0});
+
+export default mongoose.model("Session",sessionSchema);
