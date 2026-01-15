@@ -253,3 +253,8 @@ File: frontend/src/services/sensorService.js
 # BƯỚC 15: TẠO AUTH CONTEXT (GLOBAL STATE)
 File: frontend/src/contexts/AuthContext.js
 
+
+
+https://tweakcn.com/
+https://patterncraft.fun/
+https://ui.shadcn.com/blocks/login

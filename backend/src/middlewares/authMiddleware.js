@@ -1,0 +1,39 @@
+import jwt from 'jsonwebtoken'
+import {User} from '../models/User.js'
+
+export const protectedRoute = async (req, res, next) => {
+    try{
+        // lay token tu header
+        const authHeader = req.headers["authorization"];
+        const token = authHeader&& authHeader.split(" ")[1]; 
+        if(!token){
+            return res.status(401).json({message:"Khong tim thay access token"});
+        }
+
+        // xac nhan token hop le 
+        let decodedUser;
+        try {
+            decodedUser = jwt.verify(
+                token,
+                process.env.ACCESS_TOKEN_SECRET
+            );
+        } catch (jwtError) {
+            return res.status(403).json({
+                message: 'Access token khong hop le hoac da het han'
+            });
+        }
+        // tim user
+        const user = await User.findById(decodedUser.userId).select('-hashedPassword');
+
+        if(!user){
+            return res.status(404).json({message: "nguoi dung khong ton tai"});
+        }
+
+        // tra user ve trong req
+        req.user = user;
+        next();
+    }catch(error){
+        console.error("loi khi xac minh jwt trong authMiddleware", error);
+        return  res.status(500).json({message: "loi he thong"}); 
+    }
+}
