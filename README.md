@@ -258,3 +258,47 @@ File: frontend/src/contexts/AuthContext.js
 https://tweakcn.com/
 https://patterncraft.fun/
 https://ui.shadcn.com/blocks/login
+
+
+
+frontend/
+├── node_modules/          # Dependencies (tự động tạo)
+├── public/                # Static files
+├── src/                   # Source code chính
+│   ├── assets/           # Tài nguyên tĩnh
+│   ├── components/       # React components tái sử dụng
+│   ├── lib/              # Thư viện/utilities
+│   ├── pages/            # Các trang chính
+│   ├── services/         # API calls
+│   ├── store/            # State management (Zustand/Redux)
+│   ├── types/            # TypeScript type definitions
+│   ├── App.tsx           # Component gốc
+│   ├── index.css         # Global styles
+│   └── main.tsx          # Entry point
+├── .gitignore
+├── components.json       # shadcn/ui config
+├── eslint.config.js      # ESLint config
+├── index.css             # Duplicate? (nên ở src/)
+└── index.html            # HTML template
+    
+thứ tự code :
+types
+  ↓
+services (API)
+  ↓
+store (state + logic)
+  ↓
+routing / protected route
+  ↓
+UI components
+  ↓
+forms
+  ↓
+pages
+  ↓
+app root
+
+
+
+npm install recharts
+npx shadcn@latest add chart

@@ -21,7 +21,7 @@ import { z } from "zod"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useAuthStore } from "@/store/useAuthStore"
-import { useNavigate } from "react-router"
+import { Link, useNavigate } from "react-router"
 import { toast } from "sonner"
 
 // --- 2. ĐỊNH NGHĨA SCHEMA CHO ĐĂNG KÝ ---
@@ -80,7 +80,7 @@ export function SignupForm({
   const onSubmit = async (data: SignupFormValues) => {
     const {displayName, username, email, password} = data;
 
-    // gọi backend để dignup
+    // gọi backend để signup
     await signUp(username, password, email, displayName);
     toast.success("Đăng ký tài khoản thành công!", {
         description: "Bạn có thể dùng tài khoản này để đăng nhập ngay bây giờ.",
@@ -194,7 +194,7 @@ export function SignupForm({
                 </Button>
 
                 <FieldDescription className="text-center mt-2">
-                  Already have an account? <a href="#" className="underline">Login</a>
+                  Already have an account? <Link to="/signin">Login</Link>
                 </FieldDescription>
               </Field>
             </FieldGroup>

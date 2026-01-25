@@ -8,11 +8,11 @@ const ProtectedRoute = () => {
     if(!accessToken) {
         return(
             <Navigate to="/signin" replace/>
-
         )
     }
   return (
     <Outlet></Outlet>
+    //Outlet = chỗ để render route con.
   )
 }
 

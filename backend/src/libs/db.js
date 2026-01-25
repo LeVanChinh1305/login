@@ -1,3 +1,4 @@
+// kết nối mongodb 
 import mongoose from 'mongoose';
 export const connectDB = async (mongoURL) => {
     try {

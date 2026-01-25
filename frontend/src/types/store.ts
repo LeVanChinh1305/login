@@ -1,5 +1,6 @@
 import type { User } from "./user";
 
+// authState: bản thiết kế của useAUthStore : mô tả hình dạng của auth store đang dùng với zustand
 export interface AuthState{
     accessToken: string | null;
     user: User | null;

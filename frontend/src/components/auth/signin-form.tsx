@@ -20,6 +20,7 @@ import {useForm} from "react-hook-form" // hook quản lý trạng thái form (g
 import {zodResolver} from "@hookform/resolvers/zod" //cầu nối giúp React Hook Form hiểu được các quy tắc của zod 
 import { useAuthStore } from "@/store/useAuthStore"
 import { useNavigate } from "react-router"
+import {Link} from "react-router"
 
 // định nghĩa Schema với zod 
 // đây là nơi thiết lập " luật " cho form 
@@ -33,6 +34,15 @@ const loginSchema = z.object({
   password: z
     .string()
     .min(1, "Vui lòng không bỏ sót mật khẩu"),
+
+  /*
+  .min(8, "Password phải ít nhất 8 ký tự")
+  .max(50, "Password tối đa 50 ký tự")
+  .regex(/[A-Z]/, "Phải có ít nhất 1 chữ hoa")
+  .regex(/[a-z]/, "Phải có ít nhất 1 chữ thường")
+  .regex(/[0-9]/, "Phải có ít nhất 1 số")
+  .regex(/[!@#$%^&*]/, "Phải có ít nhất 1 ký tự đặc biệt");
+  */
 })
 // trích xuất dữ liệu từ schema 
 // tự động tạo ra một type từ schema của zod 
@@ -48,28 +58,23 @@ export function LoginForm({
   const {signIn} = useAuthStore();
   const navigate = useNavigate(); 
 
- // khởi tạo React hook form 
+  // --- 3. KHỞI TẠO HOOK FORM ---
     // register: hàm để kết nối các ô input với thư viện 
     // handleSubmit: hàm bao bọc giúp kiểm tra validate trưỚc khi chạy code submit
     // formState: chứa các trạng thái 
- const {
-  register,
-  handleSubmit,
-  formState:{errors, isSubmitting},
- } = useForm<LoginFormValues>({
-  resolver: zodResolver(loginSchema), // sử dụng zod để validate 
-  defaultValues:{ // giá trị khởi tạo mặc định cho các trường 
-    email: "",
-    password: "",
+  const { register, handleSubmit, formState:{errors, isSubmitting},} = useForm<LoginFormValues>({
+    resolver: zodResolver(loginSchema), // sử dụng zod để validate 
+    defaultValues:{ // giá trị khởi tạo mặc định cho các trường 
+      email: "",
+      password: "",
+    }
+  })
+  // --- 4. XỬ LÝ KHI GỬI FORM - dữ liệu đã được valide ---
+  const onSubmit = async(data: LoginFormValues) => {
+    const {email, password} = data;
+    await signIn(email, password);
+    navigate("/");
   }
- })
- // hàm xử lý khi submit (dữ liệu đã được zod validate)
- const onSubmit = async(data: LoginFormValues) => {
-  const {email, password} = data;
-  await signIn(email, password);
-  navigate("/");
-
- }
   
 
   return (
@@ -83,19 +88,27 @@ export function LoginForm({
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)}>
+            {/* handleSubmit : ngăn reload trang khi user bấm submit, 
+            lấy toàn bộ dữ liệu từ form, valide bằng zod schema, nếu có lỗi cập nhật errors,
+             nếu hợp lệ gọi onsubmit(data) */}
             <FieldGroup>
               {/* thẻ email */}
               <Field>
                 <FieldLabel htmlFor="email">Email</FieldLabel>
                 <Input
-                  id = "email"
+                  id = "email"  
                   type = "email"
                   placeholder="a@gmail.com"
                   // dang ky input
                   {...register("email")}
+                  // lưu giá trị input vào form state 
+                  // theo dõi thay đổi khi người dùng gõ
+                  // gắn name = "email" cho input
+                  // kết nối với hệ thống validate
                   className = {cn(
-                    errors.email && "border-red-500 focus-visible: ring-red-500"
+                    errors.email && "border-red-500 focus-visible:ring-red-500"
                   )}
+                  // cn() = (clsx + tailwind-merge) sẽ : bỏ giá trị false/ chỉ giữ class string hợp lệ 
                 />
                 {/*hiển thị lỗi từ đối tượng errors của hook form  */} 
                 {errors.email && (
@@ -108,10 +121,7 @@ export function LoginForm({
               <Field>
                 <div className="flex items-center">
                   <FieldLabel htmlFor="password">Password</FieldLabel>
-                  <a
-                    href="#"
-                    className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
-                  >
+                  <a href="#" className="ml-auto inline-block text-sm underline-offset-4 hover:underline">
                     Forgot your password?
                   </a>
                 </div>
@@ -135,7 +145,7 @@ export function LoginForm({
                 <Button type="submit" variant="black" className="w-full" disabled={isSubmitting}>{isSubmitting ? "logging in ..." : "login"}</Button>
                 
                 <FieldDescription className="text-center">
-                  Don&apos;t have an account? <a href="#">Sign up</a>
+                  Don&apos;t have an account? <Link to = "/signup">Sign up</Link>
                 </FieldDescription>
               </Field>
             </FieldGroup>
